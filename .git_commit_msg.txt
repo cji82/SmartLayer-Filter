@@ -1,7 +1,0 @@
-UI: 탭 분리 및 속성 찾기(검색·이동·확대)
-
-- 레이어 필터 / 속성 찾기 탭 구분
-- QgsExpression 필드 인용 버전 호환, QgsFeatureIds 명시 import
-- 레이어·지도 CRS 불일치 시 변환 후 이동·확대·강조
-- 활성 레이어 변경 시 검색 결과 목록 초기화
-- .ui PyQt5 uic 호환(stretch 항목 제거)
