@@ -1,0 +1,37 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Smart Layer Filter
+qgisMinimumVersion=3.0
+description=레이어 그룹 단위로 여러 레이어에 동일한 속성 필터(데이터 부분 집합)를 적용합니다.
+version=0.0.1
+author=cha-jeungil
+email=ckwjddlf82@gmail.com
+
+about=레이어 그룹에 속한 모든 레이어의 표시 데이터를, 같은 조건의 속성 필터로 한꺼번에 제한할 수 있습니다. XML로 필터 프리셋(적용 필드·연산자·다른 레이어와의 값 연계 등)을 정의할 수 있으며, 플러그인에서는 프리셋과 공통 필터 값을 고르는 방식으로 사용합니다. 다른 레이어와의 값 연계(Value Relation)와 레이어마다 다른 필드 이름 매핑을 지원합니다. 프리셋 XML은 프로젝트 변수(groupFilterPresets)에 저장됩니다.
+
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+# changelog 0.2 = fixed problem when "\" in value of value relation 
+
+# Tags are comma separated with spaces allowed
+tags=field, attribute, layers, python, group, filter
+
+homepage=https://github.com/PeterBontinck/QGIS-Layergroup-Filter
+category=Plugins
+icon=icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+

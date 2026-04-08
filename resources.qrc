@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/plugins/smart_layer_filter">
+        <file>icon.png</file>
+        <file>action_refresh.png</file>
+    </qresource>
+</RCC> 

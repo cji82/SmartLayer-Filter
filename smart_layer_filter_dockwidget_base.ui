@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LayerGroupFilterDockWidgetBase</class>
+ <widget class="QDockWidget" name="LayerGroupFilterDockWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>340</width>
+    <height>420</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Smart Layer Filter</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QVBoxLayout" name="verticalLayout_main">
+    <property name="spacing">
+     <number>6</number>
+    </property>
+    <property name="leftMargin">
+     <number>6</number>
+    </property>
+    <property name="topMargin">
+     <number>6</number>
+    </property>
+    <property name="rightMargin">
+     <number>6</number>
+    </property>
+    <property name="bottomMargin">
+     <number>6</number>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="mainTabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabFilter">
+       <attribute name="title">
+        <string>레이어 필터</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_filter">
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="Label2">
+            <property name="text">
+             <string>Layer Group</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelLayerInGroup">
+            <property name="text">
+             <string>Layer</string>
+            </property>
+            <property name="toolTip">
+             <string>필드·고유값 목록은 이 레이어 기준입니다. 그룹 전체 적용 시에도 동일 필드명이 다른 레이어에 있어야 합니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label3">
+            <property name="text">
+             <string>Filter Attribute</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelValueLabelColumn">
+            <property name="text">
+             <string>조회·표시 컬럼</string>
+            </property>
+            <property name="toolTip">
+             <string>Filter Attribute의 설명 또는 값이 담긴 컬럼을 지정하시면 Filter Value에서 해당 값으로 조회할 수 있습니다. 비우면 Filter Attribute 값만 표시합니다. 실제 필터에는 Filter Attribute(코드) 값이 사용됩니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label5">
+            <property name="text">
+             <string>Filter Operator</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label4">
+            <property name="text">
+             <string>Filter Value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="layerGroupComboBox"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="layerInGroupComboBox">
+            <property name="toolTip">
+             <string>속성·값 목록을 가져올 벡터 레이어입니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="filterAttributeComboBox">
+            <property name="toolTip">
+             <string>필터 subset에 쓰는 실제 필드(코드·키)입니다. 옆 ‘조회·표시 컬럼’에서 사람이 읽기 쉬운 이름 등을 골라 목록·검색에 쓸 수 있습니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="valueLabelColumnComboBox">
+            <property name="toolTip">
+             <string>Filter Attribute의 설명 또는 값이 담긴 컬럼을 지정하시면 Filter Value에서 해당 값으로 조회할 수 있습니다. (없음)이면 Filter Attribute 값만 목록에 나옵니다. 적용되는 필터 값은 항상 Filter Attribute 컬럼의 원본 값입니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QComboBox" name="filterOperatorComboBox">
+            <property name="toolTip">
+             <string>열리는 목록에서 연산자와 설명을 선택합니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="filterValueComboBox">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>목록·자동완성은 조회·표시 컬럼 값으로 찾을 수 있고, Replace/Add 적용 시에는 Filter Attribute(코드) 값으로 필터가 만들어집니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QToolButton" name="loadValuesButton">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>:/plugins/smart_layer_filter/action_refresh.png</normaloff>:/plugins/smart_layer_filter/action_refresh.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="applyGroupFilterCheckBox">
+          <property name="text">
+           <string>그룹 전체에 필터 적용</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>체크: 그룹 내 모든 벡터 레이어에 동일 조건 적용.
+해제: 위에서 고른 레이어에만 적용.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="replacePushButton">
+            <property name="text">
+             <string>Replace Filters</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="addPushButton">
+            <property name="text">
+             <string>Add Filter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="clearPushButton">
+            <property name="text">
+             <string>Clear Filters</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabLocate">
+       <attribute name="title">
+        <string>속성 찾기</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_locate">
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="locateLayerInfoLabel">
+          <property name="text">
+           <string>레이어 패널에서 벡터 레이어를 선택하세요.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_locate">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelLocateField">
+            <property name="text">
+             <string>속성</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="locateFieldComboBox">
+            <property name="toolTip">
+             <string>검색할 필드입니다. 값은 부분 일치(대소문자 무시)로 찾습니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelLocateSearch">
+            <property name="text">
+             <string>검색어</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="locateSearchLineEdit">
+            <property name="placeholderText">
+             <string>값의 일부를 입력…</string>
+            </property>
+            <property name="toolTip">
+             <string>선택한 속성을 문자열로 변환한 뒤, 입력한 글자가 포함된 피처를 검색합니다.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="locateSearchPushButton">
+          <property name="text">
+           <string>검색</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="locateStatusLabel">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="locateResultsListWidget">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>한 줄을 클릭해 선택한 뒤 이동·확대하세요. 더블클릭은 확대와 같습니다.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_locate">
+          <item>
+           <widget class="QPushButton" name="locatePanPushButton">
+            <property name="text">
+             <string>이동</string>
+            </property>
+            <property name="toolTip">
+             <string>축척은 그대로 두고, 화면 중심을 목록에서 선택한 피처의 기준점(점=좌표, 선·면=centroid)으로 옮깁니다.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="locateZoomPushButton">
+            <property name="text">
+             <string>확대</string>
+            </property>
+            <property name="toolTip">
+             <string>목록에서 선택한 피처가 여유 있게 보이도록 범위를 맞추고 잠시 강조합니다.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
