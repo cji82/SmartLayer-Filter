@@ -26,7 +26,7 @@ about=레이어 그룹에 속한 모든 레이어의 표시 데이터를, 같은
 # Tags are comma separated with spaces allowed
 tags=field, attribute, layers, python, group, filter
 
-homepage=https://github.com/PeterBontinck/QGIS-Layergroup-Filter
+homepage=https://github.com/cji82/SmartLayer-Filter
 category=Plugins
 icon=icon.png
 # experimental flag

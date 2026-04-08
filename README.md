@@ -1,2 +1,63 @@
-# QGIS-SmartLayer-Filter
-Manage your Layer Filters (data subset) using layer-groups. Written for QGIS3.0
+# Smart Layer Filter
+
+[QGIS](https://qgis.org/) **3.0 이상**용 플러그인입니다. **레이어 그룹** 단위로 여러 벡터 레이어에 동일한 **속성 필터**(subset)를 적용하거나, **속성 검색**으로 피처 위치로 이동·확대할 수 있습니다.
+
+## 주요 기능
+
+### 레이어 필터
+
+- 프로젝트의 **레이어 그룹**을 선택하고, 그 안의 레이어·필터 속성·연산자·값을 지정합니다.
+- **그룹 전체에 필터 적용** 시 그룹 내 모든 벡터 레이어에 같은 조건을 적용합니다.
+- **Replace / Add / Clear**로 subset 문자열을 교체·추가·초기화합니다.
+- **조회·표시 컬럼**을 지정하면 Filter Value 목록은 사람이 읽기 쉬운 값으로 보이고, 실제 필터에는 **Filter Attribute(코드) 값**이 사용됩니다.
+
+### 속성 찾기
+
+- **레이어 패널에서 선택한 벡터 레이어**를 대상으로, 필드·검색어로 피처를 검색합니다.
+- 결과 목록에서 항목을 선택한 뒤 **이동**(현재 축척 유지, 중심 이동) 또는 **확대**를 할 수 있습니다.
+- 레이어 CRS와 지도 CRS가 다르면 **지도 좌표계로 변환**한 뒤 이동·확대합니다.
+
+### 기타
+
+- **필터 프리셋 XML** 불러오기(메뉴) 등 기존 프리셋 연동은 `metadata.txt`의 설명을 참고하세요.
+
+## 요구 사항
+
+- **QGIS 3.x** (권장: 최신 LTR)
+
+## QGIS에 설치·적용하는 방법
+
+### 방법 1: ZIP으로 설치 (권장)
+
+1. 이 저장소를 **ZIP으로 내려받거나**, 클론한 뒤 플러그인 **폴더만** 압축합니다.
+  - ZIP **안쪽 최상위**에 `metadata.txt`가 바로 보여야 합니다.  
+  - 폴더 이름은 예: `SmartLayer-Filter` (그 안에 `metadata.txt`, `__init__.py` 등).
+2. QGIS를 실행합니다.
+3. 메뉴 **플러그인 → 플러그인 관리 및 설치**를 엽니다.
+4. 왼쪽에서 **ZIP에서 설치**를 선택합니다.
+5. 만든 ZIP 파일을 선택하고 **설치**합니다.
+6. **설치됨** 탭에서 **Smart Layer Filter**를 찾아 체크하여 활성화합니다.
+7. 필요 시 QGIS를 한 번 재시작합니다.
+
+### 방법 2: 플러그인 폴더에 복사
+
+1. QGIS **사용자 프로필**의 Python 플러그인 경로를 연다.
+  - 예(Windows): `%APPDATA%\QGIS\QGIS3\profiles\default\python\plugins\`  
+  - 메뉴 **설정 → 사용자 프로필 → 활성 프로필 폴더 열기** → `python` → `plugins` 로 이동해도 됩니다.
+2. 이 저장소 전체 폴더(또는 `SmartLayer-Filter` 폴더)를 위 `plugins` 아래에 **복사**합니다.
+  - 최종 경로 예: `...\plugins\SmartLayer-Filter\metadata.txt`
+3. QGIS를 **완전히 종료했다가 다시 실행**합니다.
+4. **플러그인 → 플러그인 관리 및 설치 → 설치됨**에서 **Smart Layer Filter**를 켭니다.
+
+### 설치 확인
+
+- 메뉴에 **Smart Layer Filter** 관련 항목이 보이거나, **웹 → 패널** 목록에 **Smart Layer Filter** 독이 있으면 설치된 것입니다.
+- 도구바 아이콘을 눌러 독을 띄운 뒤 **레이어 필터** / **속성 찾기** 탭을 사용할 수 있습니다.
+
+## 저장소
+
+- [https://github.com/cji82/SmartLayer-Filter](https://github.com/cji82/SmartLayer-Filter)
+
+## 라이선스
+
+저장소 루트의 `LICENSE` 파일을 참고하세요.
