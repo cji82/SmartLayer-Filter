@@ -23,9 +23,9 @@
 """
 
 import os
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtWidgets import QDockWidget
-from PyQt5.QtCore import pyqtSignal
+from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
+from qgis.PyQt.QtWidgets import QDockWidget
+from qgis.PyQt.QtCore import pyqtSignal
 
 # Import the code for the DockWidget
 FORM_CLASS, _ = uic.loadUiType(os.path.join(

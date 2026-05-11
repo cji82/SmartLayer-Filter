@@ -26,25 +26,48 @@ try:
     from qgis.core import QgsFeatureIds
 except ImportError:
     QgsFeatureIds = None
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QThread, pyqtSignal, QMetaObject, Q_ARG, QObject, pyqtSlot
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (
-    QAction,
-    QFileDialog,
-    QCompleter,
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QSettings,
+    QTranslator,
+    pyqtSignal,
+    qVersion,
+)
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import (
+    QApplication,
     QComboBox,
+    QCompleter,
+    QFileDialog,
     QListWidgetItem,
     QMessageBox,
-    QAbstractItemView,
-    QApplication,
 )
-# Initialize Qt resources from file resources.py
-from .resources import *
+import os.path
 import xml.etree.ElementTree as ET
 
-# Import the code for the DockWidget
+from .resources import *
+from .pyqt_compat import (
+    QAbstractItemView_SingleSelection,
+    QAction,
+    QComboBox_NoInsert,
+    QCompleter_PopupCompletion,
+    Qgis_Critical,
+    Qgis_Info,
+    Qgis_Warning,
+    QgsFeatureRequest_NoGeometry,
+    QgsTask_Running,
+    QgsWkb_PointGeometry,
+    Qt_CaseInsensitive,
+    Qt_DisplayRole,
+    Qt_LeftDockWidgetArea,
+    Qt_MatchContains,
+    Qt_UserRole,
+    Qt_UserRole1,
+    Qt_WaitCursor,
+    font_metrics_horizontal_advance,
+)
+
 from .layer_group_filter_dockwidget import SmartLayerFilterDockWidget
-import os.path
 
 
 def _provider_can_scan_unique_values(provider):
@@ -110,33 +133,33 @@ class FilterValueTask(QgsTask):
         self.layer_id = layer_id
         self._is_cancelled = False
         self._is_completed = False
-        QgsMessageLog.logMessage(f"FilterValueTask initialized: layer={layer.name()}, fieldIndex={fieldIndex}, layer_id={layer_id}", level=Qgis.Info)
+        QgsMessageLog.logMessage(f"FilterValueTask initialized: layer={layer.name()}, fieldIndex={fieldIndex}, layer_id={layer_id}", level=Qgis_Info)
         
     def cancel(self):
         """작업 취소 시 호출되는 메서드"""
         if not self._is_cancelled:
             self._is_cancelled = True
             super().cancel()
-            QgsMessageLog.logMessage("Task cancelled", level=Qgis.Info)
+            QgsMessageLog.logMessage("Task cancelled", level=Qgis_Info)
         
     def finished(self, result):
         """작업 완료 시 호출되는 메서드"""
         if not self._is_completed:
             self._is_completed = True
             super().finished(result)
-            QgsMessageLog.logMessage("Task completed", level=Qgis.Info)
+            QgsMessageLog.logMessage("Task completed", level=Qgis_Info)
         
     def run(self):
         try:
             if self._is_cancelled:
                 return False
                 
-            QgsMessageLog.logMessage(f"Starting FilterValueTask.run for layer: {self.layer.name()}", level=Qgis.Info)
+            QgsMessageLog.logMessage(f"Starting FilterValueTask.run for layer: {self.layer.name()}", level=Qgis_Info)
             # uniqueValues를 사용하여 고유값을 가져옴
             provider = self.layer.dataProvider()
             if _provider_can_scan_unique_values(provider):
                 field_name = self.layer.fields().at(self.fieldIndex).name()
-                QgsMessageLog.logMessage(f"Getting unique values for field: {field_name}", level=Qgis.Info)
+                QgsMessageLog.logMessage(f"Getting unique values for field: {field_name}", level=Qgis_Info)
                 
                 # 현재 필터 문자열 저장
                 current_filter = self.layer.subsetString()
@@ -156,16 +179,16 @@ class FilterValueTask(QgsTask):
                 if values:
                     # None 값 제외하고 문자열로 변환
                     values = [str(v) for v in values if v is not None]
-                    QgsMessageLog.logMessage(f"Found {len(values)} unique values", level=Qgis.Info)
+                    QgsMessageLog.logMessage(f"Found {len(values)} unique values", level=Qgis_Info)
                     self.valuesReady.emit(values, self.layer_id)
                     return True
                 else:
-                    QgsMessageLog.logMessage("No unique values found", level=Qgis.Warning)
+                    QgsMessageLog.logMessage("No unique values found", level=Qgis_Warning)
             else:
-                QgsMessageLog.logMessage("Provider not available or cannot scan unique values", level=Qgis.Warning)
+                QgsMessageLog.logMessage("Provider not available or cannot scan unique values", level=Qgis_Warning)
             return False
         except Exception as e:
-            QgsMessageLog.logMessage(f"Error in FilterValueTask: {str(e)}", level=Qgis.Critical)
+            QgsMessageLog.logMessage(f"Error in FilterValueTask: {str(e)}", level=Qgis_Critical)
             return False
 
 class valueRelationException(Exception): pass
@@ -374,7 +397,7 @@ class LayerGroupFilter:
         try:
             # 작업자 스레드 정리
             for task in self.tasks:
-                if task.status() == QgsTask.Running:
+                if task.status() == QgsTask_Running:
                     task.cancel()
             self.tasks.clear()
             
@@ -427,7 +450,7 @@ class LayerGroupFilter:
     def _setup_locate_tab(self):
         d = self.dockwidget
         lw = d.locateResultsListWidget
-        lw.setSelectionMode(QAbstractItemView.SingleSelection)
+        lw.setSelectionMode(QAbstractItemView_SingleSelection)
         lw.itemClicked.connect(self._on_locate_item_clicked)
         d.locateSearchPushButton.clicked.connect(self._locate_run_search)
         d.locateSearchLineEdit.returnPressed.connect(self._locate_run_search)
@@ -594,7 +617,7 @@ class LayerGroupFilter:
         lw.clear()
         d.locateStatusLabel.setText(self.tr("검색 중…"))
         QApplication.processEvents()
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt_WaitCursor)
         feats = []
         try:
             feats = list(layer.getFeatures(req))
@@ -607,8 +630,8 @@ class LayerGroupFilter:
         for feat in feats:
             row = self._locate_format_result_row(layer, feat, fidx)
             it = QListWidgetItem(row)
-            it.setData(Qt.UserRole, feat.id())
-            it.setData(Qt.UserRole + 1, lid)
+            it.setData(Qt_UserRole, feat.id())
+            it.setData(Qt_UserRole1, lid)
             tip = self._locate_result_tooltip(layer, feat, fidx)
             if tip:
                 it.setToolTip(tip)
@@ -636,7 +659,7 @@ class LayerGroupFilter:
                         self.LOCATE_MAX_RESULTS
                     ),
                     tag="Smart Layer Filter",
-                    level=Qgis.Info,
+                    level=Qgis_Info,
                 )
             if lw.count() > 0:
                 lw.setCurrentRow(0)
@@ -646,8 +669,8 @@ class LayerGroupFilter:
         item = self.dockwidget.locateResultsListWidget.currentItem()
         if item is None:
             return None, None, None
-        fid = item.data(Qt.UserRole)
-        lid = item.data(Qt.UserRole + 1)
+        fid = item.data(Qt_UserRole)
+        lid = item.data(Qt_UserRole1)
         if lid is None or fid is None:
             return None, None, None
         lyr = QgsProject.instance().mapLayer(lid)
@@ -681,7 +704,7 @@ class LayerGroupFilter:
             QgsMessageLog.logMessage(
                 self.tr("좌표 변환 실패: {0}").format(str(e)),
                 tag="Smart Layer Filter",
-                level=Qgis.Warning,
+                level=Qgis_Warning,
             )
             return None
         if g.isNull():
@@ -693,7 +716,7 @@ class LayerGroupFilter:
         if geom is None or geom.isNull():
             return None
         try:
-            if geom.type() == QgsWkbTypes.PointGeometry:
+            if geom.type() == QgsWkb_PointGeometry:
                 if geom.isMultipart():
                     mp = geom.asMultiPoint()
                     if mp:
@@ -853,12 +876,12 @@ class LayerGroupFilter:
                 QgsMessageLog.logMessage("Setting up filter value combo box autocompletion...", tag="Smart Layer Filter")
                 fv = self.dockwidget.filterValueComboBox
                 fv.setEditable(True)
-                fv.setInsertPolicy(QComboBox.NoInsert)
+                fv.setInsertPolicy(QComboBox_NoInsert)
                 completer = QCompleter(fv.model(), fv)
-                completer.setCaseSensitivity(Qt.CaseInsensitive)
-                completer.setFilterMode(Qt.MatchContains)
-                completer.setCompletionMode(QCompleter.PopupCompletion)
-                completer.setCompletionRole(Qt.DisplayRole)
+                completer.setCaseSensitivity(Qt_CaseInsensitive)
+                completer.setFilterMode(Qt_MatchContains)
+                completer.setCompletionMode(QCompleter_PopupCompletion)
+                completer.setCompletionRole(Qt_DisplayRole)
                 completer.setMaxVisibleItems(20)
                 completer.setWrapAround(False)
                 fv.setCompleter(completer)
@@ -900,7 +923,7 @@ class LayerGroupFilter:
 
             # show the dockwidget
             QgsMessageLog.logMessage("Adding dockwidget to QGIS interface...", tag="Smart Layer Filter")
-            self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dockwidget)
+            self.iface.addDockWidget(Qt_LeftDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
             
             QgsMessageLog.logMessage("Reloading project...", tag="Smart Layer Filter")
@@ -943,7 +966,7 @@ class LayerGroupFilter:
             QgsMessageLog.logMessage(
                 "프로젝트 변수 groupFilterPresets 없음(선택). 메뉴에서 XML을 불러올 수 있습니다.",
                 tag="Smart Layer Filter",
-                level=Qgis.Info,
+                level=Qgis_Info,
             )
         
         QgsMessageLog.logMessage("Project reload completed", tag="Smart Layer Filter")
@@ -1153,11 +1176,10 @@ class LayerGroupFilter:
             label = f"{sym.ljust(col_w)}  {desc}"
             labels.append((label, sym))
         fm = cb.fontMetrics()
-        adv = getattr(fm, "horizontalAdvance", fm.width)
         max_px = 0
         for label, sym in labels:
             cb.addItem(label, sym)
-            max_px = max(max_px, adv(label))
+            max_px = max(max_px, font_metrics_horizontal_advance(fm, label))
         cb.setCurrentIndex(0)
         # 드롭다운이 도크보다 과하게 넓어지지 않게 상한. 긴 줄은 목록에서 가로 스크롤로 볼 수 있음
         pad = 16
@@ -1184,11 +1206,11 @@ class LayerGroupFilter:
         cb = self.dockwidget.filterOperatorComboBox
         if not symbol:
             symbol = "="
-        idx = cb.findData(symbol, Qt.UserRole)
+        idx = cb.findData(symbol, Qt_UserRole)
         if idx >= 0:
             cb.setCurrentIndex(idx)
         else:
-            idx = cb.findData("=", Qt.UserRole)
+            idx = cb.findData("=", Qt_UserRole)
             if idx >= 0:
                 cb.setCurrentIndex(idx)
 
@@ -1299,7 +1321,7 @@ class LayerGroupFilter:
             layer.setSubsetString("")
 
             def _scan(use_subset):
-                req = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+                req = QgsFeatureRequest().setFlags(QgsFeatureRequest_NoGeometry)
                 if use_subset:
                     # QGIS 3.40+ PyQt6: 필드명(str) 목록이어야 함(int면 "index 0 has type int but str is expected")
                     req.setSubsetOfAttributes([code_field, label_field], layer.fields())
@@ -1348,7 +1370,7 @@ class LayerGroupFilter:
             QgsMessageLog.logMessage(
                 f"표시용 컬럼 매핑이 일부 코드에만 있습니다(피처 스캔 {len(label_map)}/{len(codes)}).",
                 tag="Smart Layer Filter",
-                level=Qgis.Info,
+                level=Qgis_Info,
             )
         entries = []
         for code in codes:
@@ -1418,32 +1440,32 @@ class LayerGroupFilter:
     def updateDistinctValues(self, manual = False):
         """filterValueComboBox에 고유값(표시 문자열 + UserRole 코드) 반영."""
         try:
-            QgsMessageLog.logMessage("Starting updateDistinctValues", level=Qgis.Info)
+            QgsMessageLog.logMessage("Starting updateDistinctValues", level=Qgis_Info)
 
             groupIndex = self.dockwidget.layerGroupComboBox.currentIndex()
             if groupIndex < 0:
-                QgsMessageLog.logMessage("Invalid group index", level=Qgis.Warning)
+                QgsMessageLog.logMessage("Invalid group index", level=Qgis_Warning)
                 self._clear_filter_value_loading()
                 return
 
             group = self.getLayerGroup(groupIndex)
             if not group:
-                QgsMessageLog.logMessage("Group not found", level=Qgis.Warning)
+                QgsMessageLog.logMessage("Group not found", level=Qgis_Warning)
                 self._clear_filter_value_loading()
                 return
 
             current_field = self.dockwidget.filterAttributeComboBox.currentText()
             if not current_field or current_field == "Loading...":
-                QgsMessageLog.logMessage(f"Invalid current field: {current_field}", level=Qgis.Warning)
+                QgsMessageLog.logMessage(f"Invalid current field: {current_field}", level=Qgis_Warning)
                 self._clear_filter_value_loading()
                 return
 
-            QgsMessageLog.logMessage(f"Selected field: {current_field}", level=Qgis.Info)
+            QgsMessageLog.logMessage(f"Selected field: {current_field}", level=Qgis_Info)
 
             layer = self._current_reference_vector_layer()
             if not layer:
                 QgsMessageLog.logMessage(
-                    "선택된 벡터 레이어가 없어 고유값을 가져올 수 없습니다.", level=Qgis.Warning
+                    "선택된 벡터 레이어가 없어 고유값을 가져올 수 없습니다.", level=Qgis_Warning
                 )
                 self._clear_filter_value_loading()
                 return
@@ -1451,7 +1473,7 @@ class LayerGroupFilter:
             cache_key = self._filter_value_cache_key(groupIndex, layer, current_field)
 
             if cache_key in self.filter_value_cache and not manual:
-                QgsMessageLog.logMessage("Using cached values", level=Qgis.Info)
+                QgsMessageLog.logMessage("Using cached values", level=Qgis_Info)
                 pairs = self._cached_entries_to_pairs(self.filter_value_cache[cache_key])
                 self._populate_filter_value_combo_entries(pairs)
                 return
@@ -1459,20 +1481,20 @@ class LayerGroupFilter:
             self.dockwidget.filterValueComboBox.clear()
             self.dockwidget.filterValueComboBox.addItem("Loading...")
 
-            QgsMessageLog.logMessage(f"Processing layer: {layer.name()}", level=Qgis.Info)
+            QgsMessageLog.logMessage(f"Processing layer: {layer.name()}", level=Qgis_Info)
             dp = layer.dataProvider()
             if not _provider_can_scan_unique_values(dp):
-                QgsMessageLog.logMessage("Layer provider not available for unique values", level=Qgis.Warning)
+                QgsMessageLog.logMessage("Layer provider not available for unique values", level=Qgis_Warning)
                 self._clear_filter_value_loading()
                 return
 
             fieldIndex = layer.fields().indexOf(current_field)
             if fieldIndex < 0:
-                QgsMessageLog.logMessage(f"Field index not found for: {current_field}", level=Qgis.Warning)
+                QgsMessageLog.logMessage(f"Field index not found for: {current_field}", level=Qgis_Warning)
                 self._clear_filter_value_loading()
                 return
 
-            QgsMessageLog.logMessage(f"Getting unique values for field index: {fieldIndex}", level=Qgis.Info)
+            QgsMessageLog.logMessage(f"Getting unique values for field index: {fieldIndex}", level=Qgis_Info)
 
             lbl = self._current_value_label_field_name()
             try:
@@ -1481,26 +1503,26 @@ class LayerGroupFilter:
                 )
             except Exception as uv_err:
                 QgsMessageLog.logMessage(
-                    f"고유값/라벨 수집 실패: {uv_err}", level=Qgis.Critical
+                    f"고유값/라벨 수집 실패: {uv_err}", level=Qgis_Critical
                 )
                 raise
 
             if entries:
                 self._populate_filter_value_combo_entries(entries)
                 self.filter_value_cache[cache_key] = list(entries)
-                QgsMessageLog.logMessage(f"Found {len(entries)} value entries", level=Qgis.Info)
+                QgsMessageLog.logMessage(f"Found {len(entries)} value entries", level=Qgis_Info)
             else:
-                QgsMessageLog.logMessage("No unique values found (모두 NULL이거나 비어 있음)", level=Qgis.Info)
+                QgsMessageLog.logMessage("No unique values found (모두 NULL이거나 비어 있음)", level=Qgis_Info)
                 self._clear_filter_value_loading()
 
         except Exception as e:
-            QgsMessageLog.logMessage(f"Error in updateDistinctValues: {str(e)}", level=Qgis.Critical)
+            QgsMessageLog.logMessage(f"Error in updateDistinctValues: {str(e)}", level=Qgis_Critical)
             self._clear_filter_value_loading()
 
     def _updateFilterValuesUI(self, values, layer_id):
         """GUI 스레드에서 실행되는 필터 값 업데이트 메서드"""
         try:
-            QgsMessageLog.logMessage(f"Updating UI with {len(values)} values", level=Qgis.Info)
+            QgsMessageLog.logMessage(f"Updating UI with {len(values)} values", level=Qgis_Info)
             
             # 현재 선택된 그룹과 필드 확인
             groupIndex = self.dockwidget.layerGroupComboBox.currentIndex()
@@ -1522,10 +1544,10 @@ class LayerGroupFilter:
             pairs = [(str(v), str(v)) for v in sorted(str(x) for x in values)]
             self._populate_filter_value_combo_entries(pairs)
             self.filter_value_cache[cache_key] = list(pairs)
-            QgsMessageLog.logMessage(f"Updated cache for key: {cache_key}", level=Qgis.Info)
+            QgsMessageLog.logMessage(f"Updated cache for key: {cache_key}", level=Qgis_Info)
             
         except Exception as e:
-            QgsMessageLog.logMessage(f"Error in _updateFilterValuesUI: {str(e)}", level=Qgis.Critical)
+            QgsMessageLog.logMessage(f"Error in _updateFilterValuesUI: {str(e)}", level=Qgis_Critical)
 
     def getFilterFieldIndex(self, layer):
         """최적화된 필터 필드 인덱스 조회"""
@@ -1613,7 +1635,7 @@ class LayerGroupFilter:
                 else:
                     filter_text = f'"{current_field}" {current_operator} \'{current_value}\''
                     
-                QgsMessageLog.logMessage(f"Replacing filters with: {filter_text}", level=Qgis.Info)
+                QgsMessageLog.logMessage(f"Replacing filters with: {filter_text}", level=Qgis_Info)
 
                 layer_ids = []
                 for vl, lid in self._iter_filter_target_vector_layers():
@@ -1624,7 +1646,7 @@ class LayerGroupFilter:
                     for lid in layer_ids:
                         self.iface.layerTreeView().refreshLayerSymbology(lid)
         except Exception as e:
-            QgsMessageLog.logMessage(f"Error in replaceFilters: {str(e)}", level=Qgis.Critical)
+            QgsMessageLog.logMessage(f"Error in replaceFilters: {str(e)}", level=Qgis_Critical)
 
     def addFilter(self):
         """기존 필터에 새로운 필터 추가"""
@@ -1640,7 +1662,7 @@ class LayerGroupFilter:
                 else:
                     new_filter = f'"{current_field}" {current_operator} \'{current_value}\''
                     
-                QgsMessageLog.logMessage(f"Adding filter: {new_filter}", level=Qgis.Info)
+                QgsMessageLog.logMessage(f"Adding filter: {new_filter}", level=Qgis_Info)
 
                 layer_ids = []
                 for vl, lid in self._iter_filter_target_vector_layers():
@@ -1655,7 +1677,7 @@ class LayerGroupFilter:
                     for lid in layer_ids:
                         self.iface.layerTreeView().refreshLayerSymbology(lid)
         except Exception as e:
-            QgsMessageLog.logMessage(f"Error in addFilter: {str(e)}", level=Qgis.Critical)
+            QgsMessageLog.logMessage(f"Error in addFilter: {str(e)}", level=Qgis_Critical)
 
     def clearFilters(self):
         """모든 필터 제거"""
@@ -1804,11 +1826,11 @@ class LayerGroupFilter:
                 
     def onFilterAttributeChanged(self, index):
         """필터 속성이 변경될 때 호출되는 메서드"""
-        QgsMessageLog.logMessage(f"onFilterAttributeChanged called with index: {index}", level=Qgis.Info)
+        QgsMessageLog.logMessage(f"onFilterAttributeChanged called with index: {index}", level=Qgis_Info)
         if index >= 0:  # 유효한 인덱스인 경우에만 처리
             try:
                 current_field = self.dockwidget.filterAttributeComboBox.currentText()
-                QgsMessageLog.logMessage(f"Selected field: {current_field}", level=Qgis.Info)
+                QgsMessageLog.logMessage(f"Selected field: {current_field}", level=Qgis_Info)
                 layer = self._current_reference_vector_layer()
                 if layer:
                     self._populate_value_label_column_combo(
@@ -1821,7 +1843,7 @@ class LayerGroupFilter:
                 # 필터 값 업데이트
                 self.updateDistinctValues()
             except Exception as e:
-                QgsMessageLog.logMessage(f"Error in onFilterAttributeChanged: {str(e)}", level=Qgis.Critical)
+                QgsMessageLog.logMessage(f"Error in onFilterAttributeChanged: {str(e)}", level=Qgis_Critical)
 
     def getLayerGroup(self, index):
         """레이어 그룹을 가져오는 메서드"""

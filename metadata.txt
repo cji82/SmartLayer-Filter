@@ -8,7 +8,8 @@
 
 [general]
 name=Smart Layer Filter
-qgisMinimumVersion=3.0
+qgisMinimumVersion=3.4
+qgisMaximumVersion=4.99
 description=레이어 그룹 단위로 여러 레이어에 동일한 속성 필터(데이터 부분 집합)를 적용합니다.
 version=0.0.1
 author=cha-jeungil

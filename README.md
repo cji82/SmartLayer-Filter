@@ -1,6 +1,8 @@
 # Smart Layer Filter
 
-[QGIS](https://qgis.org/) **3.0 이상**용 플러그인입니다. **레이어 그룹** 단위로 여러 벡터 레이어에 동일한 **속성 필터**(subset)를 적용하거나, **속성 검색**으로 피처 위치로 이동·확대할 수 있습니다.
+[QGIS](https://qgis.org/) **3.4 이상** 및 **4.x**용 플러그인입니다. **레이어 그룹** 단위로 여러 벡터 레이어에 동일한 **속성 필터**(subset)를 적용하거나, **속성 검색**으로 피처 위치로 이동·확대할 수 있습니다.
+
+QGIS 4는 **Qt 6 / PyQt6**를 사용합니다. 이 저장소는 `qgis.PyQt`와 `pyqt_compat.py`로 QGIS 3.x(PyQt5)와 4.x를 함께 지원합니다.
 
 ## 주요 기능
 
@@ -23,7 +25,8 @@
 
 ## 요구 사항
 
-- **QGIS 3.x** (권장: 최신 LTR)
+- **QGIS 3.4 이상** 또는 **QGIS 4.x**
+- `metadata.txt`의 `qgisMinimumVersion` / `qgisMaximumVersion`에 맞는 QGIS 버전을 사용하세요.
 
 ## QGIS에 설치·적용하는 방법
 
@@ -42,7 +45,8 @@
 ### 방법 2: 플러그인 폴더에 복사
 
 1. QGIS **사용자 프로필**의 Python 플러그인 경로를 연다.
-  - 예(Windows): `%APPDATA%\QGIS\QGIS3\profiles\default\python\plugins\`  
+  - 예(Windows, QGIS 3): `%APPDATA%\QGIS\QGIS3\profiles\default\python\plugins\`
+  - 예(Windows, QGIS 4): `%APPDATA%\QGIS\QGIS4\profiles\default\python\plugins\`
   - 메뉴 **설정 → 사용자 프로필 → 활성 프로필 폴더 열기** → `python` → `plugins` 로 이동해도 됩니다.
 2. 이 저장소 전체 폴더(또는 `SmartLayer-Filter` 폴더)를 위 `plugins` 아래에 **복사**합니다.
   - 최종 경로 예: `...\plugins\SmartLayer-Filter\metadata.txt`
